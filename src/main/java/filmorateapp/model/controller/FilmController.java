@@ -1,7 +1,6 @@
 package filmorateapp.model.controller;
 
 import filmorateapp.model.Film;
-import filmorateapp.model.validation.ValidationService;
 import filmorateapp.service.film.FilmService;
 import filmorateapp.storage.film.FilmStorage;
 import lombok.RequiredArgsConstructor;
