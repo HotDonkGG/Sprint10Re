@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/film")
+@RequestMapping(value = "/films", produces = "application/json")
 @RequiredArgsConstructor
 public class FilmController {
 
