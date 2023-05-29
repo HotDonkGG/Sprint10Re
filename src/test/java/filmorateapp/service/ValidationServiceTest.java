@@ -98,13 +98,13 @@ class ValidationServiceTest {
         assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
 
-//    @Test
-//    void validateFilmDuration() {
-//        Film film = new Film();
-//        film.setName("HarryPotter");
-//        film.setDescription("HarryPotterPart1");
-//        film.setReleaseDate(getDate(-1));
-//        film.setDuration(-1L);
-//        assertThrows(ValidationException.class, () -> validationService.validate(film));
-//    }
+    @Test
+    void validateFilmDuration() {
+        Film film = new Film();
+        film.setName("HarryPotter");
+        film.setDescription("HarryPotterPart1");
+        film.setReleaseDate(getDate(-1));
+        film.setDuration(-1L);
+        assertThrows(ValidationException.class, () -> validationService.validate(film));
+    }
 }
