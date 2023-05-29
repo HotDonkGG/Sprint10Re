@@ -107,5 +107,4 @@ class ValidationServiceTest {
         film.setDuration(-1L);
         assertThrows(ValidationException.class, () -> validationService.validate(film));
     }
-
 }

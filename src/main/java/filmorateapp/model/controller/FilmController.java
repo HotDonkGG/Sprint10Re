@@ -37,7 +37,7 @@ public class FilmController {
     /**
      * Пользователь ставит лайк фильму
      */
-    @PutMapping("/{id}/like/{userId}")
+    @PutMapping("/{id}/like/{filmId}")
     public void addLike(@PathVariable String id, @PathVariable String filmId) {
         log.info("Поступил запрос на добавление лайка фильму.");
         filmService.addLike(Integer.parseInt(id), Integer.parseInt(filmId));
@@ -61,7 +61,7 @@ public class FilmController {
     /**
      * Пользователь удаляет лайк.
      */
-    @DeleteMapping("/{id}/like/{userId}")
+    @DeleteMapping("/{id}/like/{filmId}")
     public void deleteLike(@PathVariable String id, @PathVariable String filmId) {
         log.info("Поступил запрос на удаление лайка у фильма.");
         filmService.deleteLike(Integer.parseInt(filmId), Integer.parseInt(id));
