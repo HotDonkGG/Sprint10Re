@@ -20,7 +20,6 @@ public class FilmController {
 
     private final FilmStorage filmStorage;
     private final FilmService filmService;
-    private final ValidationService validationService;
 
     /**
      * Добавление фильма
