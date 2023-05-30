@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@RestController
+@RestControllerAdvice
 @Slf4j
 @RequestMapping(value = "/films", produces = "application/json")
 @RequiredArgsConstructor

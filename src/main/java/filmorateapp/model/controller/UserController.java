@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@RestControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping(value = "/users", produces = "application/json")
