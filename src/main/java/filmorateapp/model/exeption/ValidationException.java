@@ -1,7 +1,7 @@
-package filmorateapp.model.exeption;
+    package filmorateapp.model.exeption;
 
-public class ValidationException extends RuntimeException {
-    public ValidationException(String message) {
-        super(message);
+    public class ValidationException extends RuntimeException {
+        public ValidationException(String message) {
+            super(message);
+        }
     }
-}
