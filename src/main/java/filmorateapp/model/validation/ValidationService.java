@@ -1,5 +1,6 @@
 package filmorateapp.model.validation;
 
+import filmorateapp.model.exeption.ValidationException;
 import org.springframework.stereotype.Service;
 import filmorateapp.model.Film;
 import filmorateapp.model.User;
