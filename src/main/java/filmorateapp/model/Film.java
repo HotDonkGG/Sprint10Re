@@ -14,15 +14,18 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class Film {
+    @NonNull
     private int id;
     @NotBlank
     @NonNull
     private String name;
     @Size(max = 200)
+    @NonNull
     private String description;
     @Past
     private LocalDate releaseDate;
     @Positive
+    @NonNull
     private Long duration;
     private int like;
     private Set<Integer> likes;

@@ -12,11 +12,14 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Builder
 public class User {
+    @NonNull
     private Long id;
     @Email
     @NonNull
     private String email;
+    @NonNull
     private String login;
+    @NonNull
     private String name;
     @Past
     private LocalDate birthday;
