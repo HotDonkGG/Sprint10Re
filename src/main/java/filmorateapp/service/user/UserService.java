@@ -1,6 +1,7 @@
 package filmorateapp.service.user;
 
 import filmorateapp.model.User;
+import filmorateapp.model.exeption.NotFoundException;
 import filmorateapp.model.validation.ValidationService;
 import filmorateapp.storage.user.UserStorage;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class UserService {
             userStorage.updateUser(friend);
             return user;
         }
-        return null;
+        throw new NotFoundException("пользователь не был добавлен в друзья");
     }
 
     public User removeFriend(User user, long friendId) {
@@ -47,7 +48,7 @@ public class UserService {
             userStorage.updateUser(friend);
             return user;
         }
-        return null;
+        throw new NotFoundException("Пользователь не был удалён");
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
