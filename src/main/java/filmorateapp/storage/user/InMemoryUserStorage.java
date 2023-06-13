@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    private final HashSet<User> users = new HashSet<>();
+    private final List<User> users = new ArrayList<>();
     private long nextId = 0;
 
     /**
