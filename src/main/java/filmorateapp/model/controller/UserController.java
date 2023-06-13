@@ -28,9 +28,9 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Validated @RequestBody long id, @RequestBody User user) {
+    public User updateUser(@RequestBody User user) {
         log.info("Поступил запрос на обновление пользователя.");
-        return userStorage.updateUser(id, user);
+        return userStorage.updateUser(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")

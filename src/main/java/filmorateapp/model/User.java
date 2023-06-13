@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -11,8 +12,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Builder
+@ToString
 public class User {
     @NonNull
+    @Positive
     private Long id;
     @Email
     @NonNull

@@ -30,9 +30,9 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@Validated @PathVariable long id, @PathVariable Film film) {
+    public Film updateFilm(@Validated @PathVariable Film film) {
         log.info("Поступил запрос на изменения фильма.");
-        return filmStorage.updateFilm(id, film);
+        return filmStorage.updateFilm(film);
     }
 
     /**

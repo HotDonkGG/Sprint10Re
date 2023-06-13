@@ -31,8 +31,8 @@ public class UserService {
         if (friend != null) {
             user.getFriends().add(friendId);
             friend.getFriends().add(user.getId());
-            userStorage.updateUser(user.getId(), user);
-            userStorage.updateUser(friendId, friend);
+            userStorage.updateUser(user);
+            userStorage.updateUser(friend);
             return user;
         }
         return null;
@@ -43,8 +43,8 @@ public class UserService {
         if (friend != null) {
             user.getFriends().remove(friendId);
             friend.getFriends().remove(user.getId());
-            userStorage.updateUser(user.getId(), user);
-            userStorage.updateUser(friendId, friend);
+            userStorage.updateUser(user);
+            userStorage.updateUser(friend);
             return user;
         }
         return null;

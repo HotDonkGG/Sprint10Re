@@ -1,6 +1,7 @@
 package filmorateapp.storage.user;
 
 import filmorateapp.model.User;
+import filmorateapp.model.exeption.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -36,22 +37,22 @@ public class InMemoryUserStorage implements UserStorage {
                 return user;
             }
         }
-        return null;
+        throw new NotFoundException("Пользователь не найден");
     }
 
     /**
      * Обновление пользователя по Id;
      */
     @Override
-    public User updateUser(long id, User user) {
+    public User updateUser(User user) {
         for (User existingUser : users) {
-            if (existingUser.getId() == id) {
+            if (existingUser.getId().equals(user.getId())) {
                 users.remove(existingUser);
                 users.add(user);
                 return user;
             }
         }
-        return null;
+        throw new NotFoundException("Пользователь не найден");
     }
 
     /**

@@ -1,6 +1,7 @@
 package filmorateapp.storage.film;
 
 import filmorateapp.model.Film;
+import filmorateapp.model.exeption.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -12,11 +13,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     private int nextId = 0;
 
     /**
-     * Добавление фильма
+     * Добавление фильма, кладем фильм в Хэшсет
      */
     @Override
     public Film addFilm(Film film) {
-        film.setId(++nextId);
+        film.setId(nextId++);
         films.add(film);
         return film;
     }
@@ -25,15 +26,15 @@ public class InMemoryFilmStorage implements FilmStorage {
      * Обновление фильма
      */
     @Override
-    public Film updateFilm(long id, Film film) {
+    public Film updateFilm(Film film) {
         for (Film existingFilm : films) {
-            if (existingFilm.getId() == id) {
+            if (existingFilm.getId() == film.getId()) {
                 films.remove(existingFilm);
                 films.add(film);
                 return film;
             }
         }
-        return null;
+        throw new NotFoundException("Фильм не найден");
     }
 
     /**
@@ -46,7 +47,7 @@ public class InMemoryFilmStorage implements FilmStorage {
                 return film;
             }
         }
-        return null;
+        throw new NotFoundException("Фильм не найден");
     }
 
     /**
@@ -72,9 +73,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getBestFilms(int count) {
         List<Film> allFilms = getBestFilms(count);
         allFilms.sort(Comparator.comparingInt(Film::getLike).reversed());
-        List<Film> bestFilms = allFilms.stream()
+        return  allFilms.stream()
                 .limit(count)
                 .collect(Collectors.toList());
-        return bestFilms;
     }
 }
