@@ -14,19 +14,18 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Builder
 @ToString
+@EqualsAndHashCode
 public class User {
-    @NonNull
     @Positive
     private Long id;
     @Email
-    @NonNull
-    private String email;
-    @NonNull
-    private String login;
-    @NonNull
     @NotBlank
+    private String email;
+    @NotBlank
+    private String login;
     private String name;
     @Past
+    @NotBlank
     private LocalDate birthday;
     private Set<Long> friends;
 }

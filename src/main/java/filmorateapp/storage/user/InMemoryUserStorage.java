@@ -5,16 +5,16 @@ import filmorateapp.model.exeption.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import javax.validation.ValidationException;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    private final HashSet<User> users = new HashSet<>();
+    private final HashMap<Long, User> users = new HashMap<>();
     private long nextId = 0;
 
     /**
@@ -22,22 +22,22 @@ public class InMemoryUserStorage implements UserStorage {
      */
     @Override
     public User addUser(User user) {
+        validate(user);
+        user.setFriends(new HashSet<>());
         user.setId(++nextId);
-        users.add(user);
+        users.put(user.getId(), user);
+        log.info("User добавлен: " + user);
         return user;
     }
 
     /**
-     * Получение пользователя по Id если есть, если пользователя нет возвращает null;
+     * Получение пользователя по Id если есть, если пользователя нет возвращает ошибку;
      */
     @Override
     public User getUserById(long id) {
-        for (User user : users) {
-            if (user.getId() == id) {
-                return user;
-            }
-        }
-        throw new NotFoundException("Пользователь не найден");
+        if (users.containsKey(id)) {
+            return users.get(id);
+        } else throw new NotFoundException("User NotFound");
     }
 
     /**
@@ -45,36 +45,22 @@ public class InMemoryUserStorage implements UserStorage {
      */
     @Override
     public User updateUser(User user) {
-        for (User existingUser : users) {
-            if (existingUser.getId().equals(user.getId())) {
-                users.remove(existingUser);
-                users.add(user);
-                return user;
-            }
+        if (users.get(user.getId()) != null) {
+            validate(user);
+            user.setFriends(new HashSet<>());
+            users.put(user.getId(), user);
+            log.info("User обновлен");
+        } else {
+            log.error("User NotFound");
+            throw new NotFoundException("User NotFound");
         }
-        throw new NotFoundException("Пользователь не найден");
-    }
-
-    /**
-     * Удаление пользователя
-     */
-    @Override
-    public boolean deleteUser(long id) {
-        Iterator<User> iterator = users.iterator();
-        while (iterator.hasNext()) {
-            User user = iterator.next();
-            if (user.getId() == id) {
-                iterator.remove();
-                return true;
-            }
-        }
-        return false;
+        return user;
     }
 
     @Override
     public User addFriend(long userId, long friendId) {
-        getUserById(userId).getFriends().add(Long.valueOf(friendId));
-        getUserById(friendId).getFriends().add(Long.valueOf(userId));
+        getUserById(userId).getFriends().add(friendId);
+        getUserById(friendId).getFriends().add(userId);
         return getUserById(userId);
     }
 
@@ -94,7 +80,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> findAllUsers() {
-        return new ArrayList<>(users);
+        return new ArrayList<>(users.values());
     }
 
     @Override
@@ -106,5 +92,15 @@ public class InMemoryUserStorage implements UserStorage {
             }
         }
         return mutualFriends;
+    }
+
+    public void validate(User user) throws ValidationException {
+        if (user.getEmail() == null || user.getEmail().isEmpty() || !user.getEmail().contains("@")) {
+            throw new javax.validation.ValidationException("Емейл юзера не может быть пустым и должен содержать @");
+        } else if (user.getLogin() == null || user.getLogin().contains(" ")) {
+            throw new javax.validation.ValidationException("Логин пользователя не может быть пустым или содержать пробелы");
+        } else if (user.getBirthday() != null && user.getBirthday().isAfter(ChronoLocalDate.from(LocalDateTime.now()))) {
+            throw new ValidationException("Пользователь не может быть рождён в будущем");
+        }
     }
 }

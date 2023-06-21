@@ -1,7 +1,6 @@
 package filmorateapp.model.controller;
 
 import filmorateapp.model.User;
-import filmorateapp.model.validation.ValidationService;
 import filmorateapp.service.user.UserService;
 import filmorateapp.storage.user.UserStorage;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ public class UserController {
 
     private final UserService userService;
     private final UserStorage userStorage;
-    private final ValidationService validationService;
 
     @PostMapping
     public User addUser(@Validated @RequestBody User user) {
@@ -34,15 +32,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable User id, @PathVariable long friendId) {
+    public User addFriend(@PathVariable String id, @PathVariable String friendId) {
         log.info("Поступил запрос на добавления в друзья.");
-        return userService.addFriend(id, friendId);
+        return userService.addFriend(Integer.parseInt(id), Integer.parseInt(friendId));
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    public List<User> getUsers() {
         log.info("Поступил запрос на получение списка пользователей.");
-        return userService.getAllUsers();
+        return userStorage.findAllUsers();
     }
 
     @GetMapping("/{id}")
@@ -52,9 +50,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getFriends(@PathVariable long id) {
+    public List<User> getFriends(@PathVariable String id) {
         log.info("Поступил запрос на получение списка друзей.");
-        return userService.getUserFriends(id);
+        return userService.getUserFriends(Integer.parseInt(id));
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
@@ -64,8 +62,8 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable User id, @PathVariable long friendId) {
+    public void deleteFriend(@PathVariable String id, @PathVariable String friendId) {
         log.info("Поступил запрос на удаление из друзей.");
-        userService.removeFriend(id, friendId);
+        userService.removeFriend(Integer.parseInt(id), Integer.parseInt(friendId));
     }
 }
