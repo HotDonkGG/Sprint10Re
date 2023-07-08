@@ -1,14 +1,12 @@
 package filmorateapp.storage.film;
 
 import filmorateapp.model.Film;
-import filmorateapp.model.exeption.NotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
