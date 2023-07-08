@@ -42,6 +42,7 @@ public class User {
     public void addFriend(int friendId) {
         friends.add(friendId);
     }
+
     public void removeFriend(int friendId) {
         friends.remove(friendId);
     }

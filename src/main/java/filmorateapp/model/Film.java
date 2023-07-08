@@ -47,19 +47,19 @@ public class Film {
     private int like;
     private Set<Integer> likes;
 
-    public void generateAndSetId(){
+    public void generateAndSetId() {
         setId(++identification);
     }
 
-    public void generateSetOfLikes(){
+    public void generateSetOfLikes() {
         this.likes = new HashSet<Integer>();
     }
 
-    public void addLike(int userId){
+    public void addLike(int userId) {
         likes.add(userId);
     }
 
-    public void removeLike(int userId){
+    public void removeLike(int userId) {
         likes.remove(userId);
     }
 }

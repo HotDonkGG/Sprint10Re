@@ -14,10 +14,10 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-       film.generateAndSetId();
-       film.generateSetOfLikes();
-       films.put(film.getId(), film);
-       return film;
+        film.generateAndSetId();
+        film.generateSetOfLikes();
+        films.put(film.getId(), film);
+        return film;
     }
 
     @Override
@@ -34,17 +34,17 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     @Override
-    public void addLike(int filmId, int userId){
+    public void addLike(int filmId, int userId) {
         films.get(filmId).addLike(userId);
     }
 
     @Override
-    public void removeLike(int filmId, int userId){
+    public void removeLike(int filmId, int userId) {
         films.get(filmId).removeLike(userId);
     }
 
     @Override
-    public List<Film> getAllFilms(){
+    public List<Film> getAllFilms() {
         return new ArrayList<>(films.values());
     }
 

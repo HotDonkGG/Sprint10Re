@@ -20,6 +20,7 @@ public class FilmService {
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
+
     public List<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }
@@ -52,4 +53,4 @@ public class FilmService {
                 .collect(Collectors.toList());
     }
 
-    }
+}
