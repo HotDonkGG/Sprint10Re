@@ -5,65 +5,68 @@ import filmorateapp.service.film.FilmService;
 import filmorateapp.storage.film.FilmStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
 @RequestMapping(value = "/films", produces = "application/json")
-@RequiredArgsConstructor
+@RestController
 public class FilmController {
 
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    /**
-     * Добавление фильма
-     */
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
+
+    @GetMapping
+    public List<Film> getAllFilms() {
+        log.info("Получен запрос на получение списка фильмов");
+        return filmService.getAllFilms();
+    }
+
+    @GetMapping("{id}")
+    public Film getFilmById(@PathVariable("id") int filmId) {
+        log.info("Получен запрос на получение фильма id={}", filmId);
+        return filmService.getFilmById(filmId);
+    }
+
     @PostMapping
-    public Film addFilm(@Validated @RequestBody Film film) {
-        log.info("Поступил запрос на добавление фильма.");
-        return filmStorage.addFilm(film);
+    public Film addFilm(@Valid @RequestBody Film newFilm) {
+        log.info("Получен запрос на добавление нового фильма");
+        return filmService.addFilm(newFilm);
     }
 
     @PutMapping
-    public Film updateFilm(@Validated @PathVariable Film film) {
-        log.info("Поступил запрос на изменения фильма.");
-        return filmStorage.updateFilm(film);
+    public Film updateFilm(@Valid @RequestBody Film updatedFilm) {
+        log.info("Получен запрос на обновление фильма id={}", updatedFilm.getId());
+        return filmService.updateFilm(updatedFilm);
     }
 
-    /**
-     * Пользователь ставит лайк фильму
-     */
-    @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable String id, @PathVariable String userId) {
-        log.info("Поступил запрос на добавление лайка фильму.");
-        filmService.addLike(Integer.parseInt(id), Integer.parseInt(userId));
+    @PutMapping("{id}/like/{userId}")
+    public void addLike(@PathVariable("id") int filmId, @PathVariable int userId) {
+        log.info("Получен запрос на добавление лайка фильму id={} от пользователя id={}", filmId, userId);
+        filmService.addLike(filmId, userId);
     }
 
-    @GetMapping("/{id}")
-    public Film getFilm(@PathVariable String id) {
-        log.info("Получен GET-запрос на получение фильма");
-        return filmStorage.getFilmById(Integer.parseInt(id));
+    @DeleteMapping("{id}/like/{userId}")
+    public void removeLike(@PathVariable("id") int filmId, @PathVariable int userId) {
+        log.info("Получен запрос на удаление лайка фильму id={} от пользователя id={}", filmId, userId);
+        filmService.removeLike(filmId, userId);
     }
 
-    /**
-     * Возвращает список из первых count фильмов по количеству лайков
-     */
-    @GetMapping("/popular?count={count}")
-    public List<Film> getBestFilms(@RequestParam(defaultValue = "10") String count) {
-        log.info("Поступил запрос на получение списка 10 популярных фильмов.");
-        return filmService.getBestFilms(Integer.parseInt(count));
-    }
-
-    /**
-     * Пользователь удаляет лайк.
-     */
-    @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable String id, @PathVariable String userId) {
-        log.info("Поступил запрос на удаление лайка у фильма.");
-        filmService.deleteLike(Integer.parseInt(userId), Integer.parseInt(id));
+    @GetMapping("popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10")
+                                      @Positive(message = "Количество фиильмов в списке должно быть положительным")
+                                      int count) {
+        log.info("Получен запрос на получение списка из {} фильмов с наибольшим количеством лайков", count);
+        return filmService.getPopularFilms(count);
     }
 }

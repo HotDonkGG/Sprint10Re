@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,21 +21,37 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User addFriend(long userId, long friendId) {
+    public List<User> findAllUsers() {
+        return userStorage.findAllUsers();
+    }
+
+    public User getUserById(int userId) {
+        return userStorage.getUserById(userId);
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public void addFriend(int userId, int friendId) {
         userStorage.addFriend(userId, friendId);
-        return userStorage.getUserById(userId);
     }
 
-    public User removeFriend(long userId, long friendId) {
+    public void removeFriend(int userId, int friendId) {
         userStorage.removeFriend(userId, friendId);
-        return userStorage.getUserById(userId);
     }
 
-    public List<User> getMutualFriends(long userId, long otherId) {
-        return userStorage.getMutualFriends(userId, otherId);
-    }
-
-    public List<User> getUserFriends(long userId) {
+    public List<User> getFriendsByUserId(int userId) {
         return userStorage.getFriendsByUserId(userId);
+    }
+
+    public List<User> getMutualFriends(int userId, int friendId) {
+        List<User> mutualFriendsList = new ArrayList<>(userStorage.getFriendsByUserId(userId));
+        mutualFriendsList.retainAll(userStorage.getFriendsByUserId(friendId));
+        return mutualFriendsList;
     }
 }

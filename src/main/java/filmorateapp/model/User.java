@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -14,12 +15,13 @@ import java.util.Set;
 @NoArgsConstructor(force = true)
 @Builder
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"id"})
+@Getter
 public class User {
+    private static int identification = 0;
     @Positive
-    private Long id;
+    private int id;
     @Email
-    @NotBlank
     private String email;
     @NotBlank
     private String login;
@@ -27,5 +29,20 @@ public class User {
     @Past
     @NotBlank
     private LocalDate birthday;
-    private Set<Long> friends;
+    private Set<Integer> friends;
+
+    public void generateAndSetId() {
+        setId(++identification);
+    }
+
+    public void generateOfSetFriends() {
+        this.friends = new HashSet<Integer>();
+    }
+
+    public void addFriend(int friendId) {
+        friends.add(friendId);
+    }
+    public void removeFriend(int friendId) {
+        friends.remove(friendId);
+    }
 }

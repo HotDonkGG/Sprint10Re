@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequestMapping("/films")
@@ -20,19 +21,36 @@ public class FilmService {
     public FilmService(FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
-
-    public void addLike(long filmId, long userId) {
-        filmStorage.getFilmById(filmId).getLikes().add((int) userId);
+    public List<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
     }
 
-    public void deleteLike(int userId, int filmId) {
-        if (filmStorage.getFilmById(filmId).getLikes().contains(userId)) {
-            filmStorage.getFilmById(filmId).getLikes().remove(userId);
-        }
+    public Film getFilmById(int filmId) {
+        return filmStorage.getFilmById(filmId);
     }
 
-    public List<Film> getBestFilms(int count) {
-        List<Film> bestFilms = filmStorage.getBestFilms(count);
-        return bestFilms != null ? bestFilms : Collections.emptyList();
+    public Film addFilm(Film film) {
+        return filmStorage.addFilm(film);
     }
-}
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public void addLike(int filmId, int userId) {
+        filmStorage.addLike(filmId, userId);
+    }
+
+    public void removeLike(int filmId, int userId) {
+        filmStorage.removeLike(filmId, userId);
+    }
+
+    public List<Film> getPopularFilms(int count) {
+        log.info("Направлен список из {} фильмов с наибольшим количеством лайков", count);
+        return filmStorage.getAllFilms().stream()
+                .sorted((f1, f2) -> (f1.getLikes().size() - f2.getLikes().size()) * (-1))
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    }

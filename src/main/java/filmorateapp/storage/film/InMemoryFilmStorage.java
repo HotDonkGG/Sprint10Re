@@ -12,57 +12,42 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final HashSet<Film> films = new HashSet<>();
-    private int nextId = 0;
+    private final Map<Integer, Film> films = new HashMap<>();
 
-    /**
-     * Добавление фильма, кладем фильм в Хэшсет
-     */
     @Override
     public Film addFilm(Film film) {
-        film.setId(nextId++);
-        films.add(film);
+       film.generateAndSetId();
+       film.generateSetOfLikes();
+       films.put(film.getId(), film);
+       return film;
+    }
+
+    @Override
+    public Film updateFilm(Film film) {
+        film.setLikes(films.get(film.getId()).getLikes());
+        films.put(film.getId(), film);
         return film;
     }
 
-    /**
-     * Обновление фильма
-     */
     @Override
-    public Film updateFilm(Film film) {
-        for (Film existingFilm : films) {
-            if (existingFilm.getId() == film.getId()) {
-                films.remove(existingFilm);
-                films.add(film);
-                return film;
-            }
-        }
-        throw new NotFoundException("Фильм не найден");
+    public Film getFilmById(int filmId) {
+        return films.get(filmId);
     }
 
-    /**
-     * Получение фильма по Id;
-     */
+
     @Override
-    public Film getFilmById(long id) {
-        for (Film film : films) {
-            if (film.getId() == id) {
-                return film;
-            }
-        }
-        throw new NotFoundException("Фильм не найден");
+    public void addLike(int filmId, int userId){
+        films.get(filmId).addLike(userId);
     }
 
-    /**
-     * Получение 10 лучших фильмов;
-     */
     @Override
-    public List<Film> getBestFilms(int count) {
-        List<Film> allFilms = getBestFilms(count);
-        allFilms.sort(Comparator.comparingInt(Film::getLike).reversed());
-        return allFilms.stream()
-                .limit(count)
-                .collect(Collectors.toList());
+    public void removeLike(int filmId, int userId){
+        films.get(filmId).removeLike(userId);
+    }
+
+    @Override
+    public List<Film> getAllFilms(){
+        return new ArrayList<>(films.values());
     }
 
     public void validate(Film film) throws ValidationException {
