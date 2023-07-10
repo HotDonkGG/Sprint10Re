@@ -2,22 +2,19 @@ package filmorateapp.storage.user;
 
 import filmorateapp.model.User;
 
-import java.util.List;
+import java.util.HashMap;
 
 public interface UserStorage {
-    User addUser(User user);
 
-    User getUserById(int id);
+    public User getUserById(int id);
 
-    User updateUser(User user);
+    public HashMap<Integer,User> getAllUsers();
 
-    void addFriend(int userId, int friendId);
+    public User addUser(User film);
 
-    void removeFriend(int userId, int friendId);
+    public User updateUser(User film);
 
-    List<User> getMutualFriends(int id, int otherId);
+    public User deleteUser(int id);
 
-    List<User> getFriendsByUserId(int id);
-
-    List<User> findAllUsers();
+    public void deleteAllUsers();
 }

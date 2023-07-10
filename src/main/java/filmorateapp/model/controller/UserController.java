@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
-@RestControllerAdvice
+@RestController
 @Slf4j
-@RequestMapping(value = "/users", produces = "application/json")
 public class UserController {
 
     private final UserService userService;
@@ -21,52 +21,57 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
-    public User addUser(@Valid @RequestBody User newUser) {
-        log.info("Получен запрос на добавление нового пользователя");
-        return userService.addUser(newUser);
+    @DeleteMapping("/users")
+    public void deleteAllUsers() {
+        log.info("Запрос: удалить всех пользователей");
+        userService.deleteAllUsers();
     }
 
-    @PutMapping
-    public User updateUser(@Valid @RequestBody User updatedUser) {
-        log.info("Получен запрос на обновление данных пользователя id={}", updatedUser.getId());
-        return userService.updateUser(updatedUser);
+    @PostMapping("/users")
+    public User addUser(@Valid @RequestBody User user) {
+        log.info("Запрос: добавить пользователя {}", user);
+        return userService.addUser(user);
     }
 
-    @GetMapping("{id}")
-    public User getUserById(@PathVariable("id") int userId) {
-        log.info("Получен запрос на получение пользователя id={}", userId);
-        return userService.getUserById(userId);
+    @PutMapping("/users")
+    public User updateUser(@Valid @RequestBody User user) {
+        log.info("Запрос: обновить пользователя {}", user);
+        return userService.updateUser(user);
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        log.info("Получен запрос на получение списка пользователей");
-        return userService.findAllUsers();
+    @GetMapping("/users")
+    public Collection<User> getAllUsers() {
+        log.info("Запрос: передать всех пользователей");
+        return userService.getAllUsers().values();
     }
 
-    @PutMapping("{id}/friends/{friendId}")
-    public void addFriend(@PathVariable("id") int userId, @PathVariable int friendId) {
-        log.info("Получен запрос на добавление польхователя id={} в друзья пользователю id={}", friendId, userId);
-        userService.addFriend(userId, friendId);
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable int id) {
+        log.info("Запрос: передать пользователя с id {}", id);
+        return userService.getUserById(id);
     }
 
-    @DeleteMapping("{id}/friends/{friendId}")
-    public void removeFriend(@PathVariable("id") int userId, @PathVariable("friendId") int friendId) {
-        log.info("Получен запрос на удаление польхователя id={} из друзей пользователя id={}", friendId, userId);
-        userService.removeFriend(userId, friendId);
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void makeFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Запрос: сделать пользователей {} и {} друзьями", id, friendId);
+        userService.makeFriends(id, friendId);
     }
 
-    @GetMapping("{id}/friends")
-    @ResponseBody
-    public List<User> getFriendsByUserId(@PathVariable("id") int userId) {
-        log.info("Получен запрос на получения списка друзей пользователя id={}", userId);
-        return userService.getFriendsByUserId(userId);
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+        log.info("Запрос: удалить пользователей из друзей {} и {}", id, friendId);
+        userService.deleteFriend(id, friendId);
     }
 
-    @GetMapping("{id}/friends/common/{otherId}")
-    List<User> getListOfCommonFriends(@PathVariable("id") int userId, @PathVariable("otherId") int friendId) {
-        log.info("Получен запрос на получение общего списка друзей пользователей id={} и id={}", userId, friendId);
-        return userService.getMutualFriends(userId, friendId);
+    @GetMapping("/users/{id}/friends")
+    public List<User> getUserFriends(@PathVariable int id) {
+        log.info("Запрос: передать всех друзей пользователя {}", id);
+        return userService.getFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId) {
+        log.info("Запрос: передать общих друзей пользователей {} и {}", id, otherId);
+        return userService.getMutualFriends(id, otherId);
     }
 }

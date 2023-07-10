@@ -1,19 +1,18 @@
 package filmorateapp.service.user;
 
 import filmorateapp.model.User;
+import filmorateapp.model.exeption.ValidationException;
 import filmorateapp.storage.user.UserStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
-@RequestMapping("/users")
 @Slf4j
 public class UserService {
+
     private final UserStorage userStorage;
 
     @Autowired
@@ -21,12 +20,16 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public List<User> findAllUsers() {
-        return userStorage.findAllUsers();
+    public HashMap<Integer, User> getAllUsers() {
+        return userStorage.getAllUsers();
     }
 
-    public User getUserById(int userId) {
-        return userStorage.getUserById(userId);
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
+    }
+
+    public void deleteAllUsers() {
+        userStorage.deleteAllUsers();
     }
 
     public User addUser(User user) {
@@ -37,21 +40,63 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public void addFriend(int userId, int friendId) {
-        userStorage.addFriend(userId, friendId);
+    public User deleteUserById(int userId) {
+        return userStorage.deleteUser(userId);
     }
 
-    public void removeFriend(int userId, int friendId) {
-        userStorage.removeFriend(userId, friendId);
+    public void makeFriends(int user1Id, int user2Id) {
+
+        if (user1Id == user2Id) {
+            throw new ValidationException("Пользователь не может добавить себя в друзья :(");
+        }
+        User user1;
+        User user2;
+        user1 = userStorage.getUserById(user1Id);
+        user2 = userStorage.getUserById(user2Id);
+        user1.getFriendIdList().add(user2Id);
+        user2.getFriendIdList().add(user1Id);
+        log.info("{} и {} стали друзьями", user1, user2);
     }
 
-    public List<User> getFriendsByUserId(int userId) {
-        return userStorage.getFriendsByUserId(userId);
+
+    public void deleteFriend(int user1Id, int user2Id) {
+
+        User user1;
+        User user2;
+        user1 = userStorage.getUserById(user1Id);
+        user2 = userStorage.getUserById(user2Id);
+        user1.getFriendIdList().remove(user2Id);
+        user2.getFriendIdList().remove(user1Id);
+        log.info("{} и {} больше не друзья", user1, user2);
     }
 
-    public List<User> getMutualFriends(int userId, int friendId) {
-        List<User> mutualFriendsList = new ArrayList<>(userStorage.getFriendsByUserId(userId));
-        mutualFriendsList.retainAll(userStorage.getFriendsByUserId(friendId));
-        return mutualFriendsList;
+    public List<User> getFriends(int userId) {
+
+        HashSet<Integer> friendIdList;
+        List<User> friendList = new ArrayList<>();
+        HashMap<Integer, User> userList = userStorage.getAllUsers();
+        friendIdList = userStorage.getUserById(userId).getFriendIdList();
+        for (int id : friendIdList) {
+            friendList.add(userList.get(id));
+        }
+        log.info("Передан список друзей пользователя id = {}", userId);
+        return friendList;
+    }
+
+    public List<User> getMutualFriends(int user1Id, int user2Id) {
+
+        if (user1Id == user2Id) {
+            throw new ValidationException("Пользователь разделяет с собой всех своих друзей :D");
+        }
+        HashSet<Integer> user1FriendList = new HashSet<>(userStorage.getUserById(user1Id).getFriendIdList());
+        HashSet<Integer> user2FriendList = userStorage.getUserById(user2Id).getFriendIdList();
+        user1FriendList.retainAll(user2FriendList);
+        List<User> mutualFriends = new ArrayList<>();
+        for (int i : user1FriendList) {
+            mutualFriends.add(userStorage.getUserById(i));
+        }
+
+        log.info("Передан список общих друзей пользователей с id {} и {}", user1Id, user2Id);
+        return mutualFriends;
     }
 }

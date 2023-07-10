@@ -2,18 +2,19 @@ package filmorateapp.storage.film;
 
 import filmorateapp.model.Film;
 
-import java.util.List;
+import java.util.HashMap;
 
 public interface FilmStorage {
-    Film addFilm(Film film);
 
-    Film updateFilm(Film film);
+    public HashMap<Integer, Film> getAllFilms();
 
-    Film getFilmById(int id);
+    public Film getFilmById(int id);
 
-    void addLike(int filmId, int userId);
+    public Film addFilm(Film film);
 
-    void removeLike(int filmId, int userId);
+    public Film updateFilm(Film film);
 
-    List<Film> getAllFilms();
+    public Film deleteFilm(int id);
+
+    public void deleteAllFilms();
 }

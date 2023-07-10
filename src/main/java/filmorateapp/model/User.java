@@ -4,46 +4,29 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.Set;
 
-@Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
-@Builder
-@ToString
-@EqualsAndHashCode(of = {"id"})
 @Getter
+@EqualsAndHashCode
+@ToString
 public class User {
-    private static int identification = 0;
-    @Positive
+
+    @Setter
+    @EqualsAndHashCode.Exclude
     private int id;
-    @Email
+    @Email(message = "неверный формат email")
+    @NotBlank(message = "email не может быть пустым")
     private String email;
-    @NotBlank
+    @NotBlank(message = "логин не может быть пустым")
     private String login;
+    @Setter
     private String name;
-    @Past
-    @NotBlank
+    @NotNull(message = "дата рождения не может быть пустой")
     private LocalDate birthday;
-    private Set<Integer> friends;
-
-    public void generateAndSetId() {
-        setId(++identification);
-    }
-
-    public void generateOfSetFriends() {
-        this.friends = new HashSet<Integer>();
-    }
-
-    public void addFriend(int friendId) {
-        friends.add(friendId);
-    }
-
-    public void removeFriend(int friendId) {
-        friends.remove(friendId);
-    }
+    @EqualsAndHashCode.Exclude
+    @Setter
+    private HashSet<Integer> friendIdList;
 }
